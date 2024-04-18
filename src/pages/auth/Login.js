@@ -21,6 +21,7 @@ const Login = () => {
       setError('');
       setSuccess('Login successful!'); // Set success message
     } catch (error) {
+      setSuccess(''); // Clear success message
       setError('Invalid credentials');
       console.error('Login error:', error);
     }
@@ -56,7 +57,7 @@ const Login = () => {
                 </div>
                 <button type="submit" className="btn btn-primary">Login</button>
                 {error && <div className="text-danger">{error}</div>}
-                {success && <div className="text-success">{success}</div>} {/* Show success message */}
+                {success && !error && <div className="text-success">{success}</div>} {/* Show success message only if there is no error */}
               </form>
             </div>
           </div>
