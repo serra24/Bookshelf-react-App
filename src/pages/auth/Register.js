@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { validateUsername, validatePassword } from '../../validations';
-
+import axiosInstance from '../../network/axiosInstance';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser ,faEye, faEyeSlash  } from '@fortawesome/free-solid-svg-icons';
 
@@ -55,7 +55,7 @@ const Register = ({ onRegister }) => {
 
         try {
             // Register user
-            const response = await axios.post('http://127.0.0.1:5000/register', { username, password });
+            const response =  await axiosInstance.post('/register', { username, password });
             console.log(response.data);
             setSuccess('Registration successful! You can now log in.');
             setError('');

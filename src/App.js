@@ -1,22 +1,26 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+
 import './App.css';
 import Register from './pages/auth/Register';
+import Login from './pages/auth/Login';
+import { AuthProvider } from './context/AuthContext';
 function App() {
 
-    const handleRegister = () => {
-        console.log('User registered');
-    };
-
     return (
+     <AuthProvider>
         <div>
             <h1>Bookshelf App</h1>
-            <Register onRegister={handleRegister} />
+         
+               
+                  <Register  />
+                 <Login />
+                  
+            
         </div>
+         </AuthProvider>
     );
 };
 
 export default App;
-
-
 
 
