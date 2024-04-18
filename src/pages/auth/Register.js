@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { validateUsername, validatePassword } from '../validations';
+import { validateUsername, validatePassword } from '../../validations';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser ,faEye, faEyeSlash  } from '@fortawesome/free-solid-svg-icons';
 
 const Register = ({ onRegister }) => {
     const [username, setUsername] = useState('');
@@ -11,6 +14,7 @@ const Register = ({ onRegister }) => {
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleUsernameChange = (e) => {
         const value = e.target.value;
@@ -23,6 +27,9 @@ const Register = ({ onRegister }) => {
         setPassword(value);
         setPasswordError(validatePassword(value));
     };
+    const togglePasswordVisibility = () => {
+	    setShowPassword(!showPassword);
+	};
 
     const handleConfirmPasswordChange = (e) => {
         const value = e.target.value;
@@ -61,32 +68,34 @@ const Register = ({ onRegister }) => {
             if (onRegister) {
                 onRegister();
             }
-        // Retrieve existing users from local storage or initialize an empty array
-        const existingUsersJSON = localStorage.getItem('registeredUsers');
-        const existingUsers = existingUsersJSON ? JSON.parse(existingUsersJSON) : [];
-        // Append the new user to the existing users array
-        const updatedUsers = [...existingUsers, username];
-        // Save the updated users array to local storage
-        localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
-        console.log('New user added to local storage:', username);
-    } catch (error) {
-        if (error.response && error.response.status === 400) {
-            setError('Username already exists.');
-            setSuccess('');
-        } else {
-            setError('An error occurred during registration.');
-            setSuccess('');
+            // Retrieve existing users from local storage or initialize an empty array
+            const existingUsersJSON = localStorage.getItem('registeredUsers');
+            const existingUsers = existingUsersJSON ? JSON.parse(existingUsersJSON) : [];
+            // Append the new user to the existing users array
+            const updatedUsers = [...existingUsers, username];
+            // Save the updated users array to local storage
+            localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+            console.log('New user added to local storage:', username);
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                setError('Username already exists.');
+                setSuccess('');
+            } else {
+                setError('An error occurred during registration.');
+                setSuccess('');
+            }
+            console.error('Registration error:', error);
         }
-        console.error('Registration error:', error);
-    }
-};
+    };
+
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h2 className="card-title text-center">Register</h2>
+                         <h2 className="card-title text-center">Register <FontAwesomeIcon icon={faUser} /></h2>
+
                             <form onSubmit={handleSubmit}>
                                 {/* Username field */}
                                 <div className="mb-3">
@@ -102,31 +111,45 @@ const Register = ({ onRegister }) => {
                                     {usernameError && <div className="text-danger">{usernameError}</div>}
                                 </div>
                                 {/* Password field */}
-                                <div className="mb-3">
-                                    <label htmlFor="password" className="form-label">Password</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        id="password"
-                                        value={password}
-                                        onChange={handlePasswordChange}
-                                        required
-                                    />
-                                    {passwordError && <div className="text-danger">{passwordError}</div>}
-                                </div>
+				<div className="mb-3">
+				    <label htmlFor="password" className="form-label">
+					 Password
+				    </label>
+				    <div className="input-group">
+					<input
+					    type={showPassword ? 'text' : 'password'}
+					    className="form-control"
+					    id="password"
+					    value={password}
+					    onChange={handlePasswordChange}
+					    required
+					/>
+					<button className="btn btn-outline-secondary" type="button" onClick={togglePasswordVisibility}>
+					    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+					</button>
+				    </div>
+				    {passwordError && <div className="text-danger">{passwordError}</div>}
+				</div>
+
                                 {/* Confirm Password field */}
-                                <div className="mb-3">
-                                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        id="confirmPassword"
-                                        value={confirmPassword}
-                                        onChange={handleConfirmPasswordChange}
-                                        required
-                                    />
-                                    {confirmPasswordError && <div className="text-danger">{confirmPasswordError}</div>}
-                                </div>
+				  <div className="mb-3">
+				    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+				    <div className="input-group">
+					<input
+					     type={showPassword ? 'text' : 'password'}
+					    className="form-control"
+					    id="confirmPassword"
+					    value={confirmPassword}
+					    onChange={handleConfirmPasswordChange}
+					    required
+					/>
+					<button className="btn btn-outline-secondary" type="button" onClick={togglePasswordVisibility}>
+					    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+					</button>
+				    </div>
+				    {confirmPasswordError && <div className="text-danger">{confirmPasswordError}</div>}
+				</div>
+
                                 {/* Error and Success messages */}
                                 {error && <div className="alert alert-danger">{error}</div>}
                                 {success && <div className="alert alert-success">{success}</div>}
